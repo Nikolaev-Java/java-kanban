@@ -5,7 +5,11 @@ import model.StatusOfTasks;
 import model.SubTask;
 import model.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class TaskManager {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -52,7 +56,7 @@ public class TaskManager {
 
     public int createTask(Task task) {
         if (task == null) {
-            return -1;
+            return -1; //исключения еще не проходили. Поэтому решил возвращать -1.
         }
         int id = ++generateId;
         task.setId(id);
