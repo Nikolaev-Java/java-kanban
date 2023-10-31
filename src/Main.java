@@ -3,9 +3,10 @@ import model.StatusOfTasks;
 import model.SubTask;
 import model.Task;
 import service.TaskManager;
+import utils.Managers;
 
 import java.util.ArrayList;
-
+import java.util.LinkedList;
 
 public class Main {
 
@@ -16,7 +17,8 @@ public class Main {
         DONE — задача выполнена.
         */
 
-        TaskManager manager = new TaskManager();
+        TaskManager manager = Managers.getDefault();
+        LinkedList<Task> historyTest;
         Task task1 = new Task("Task-01", "Task-01 desc", StatusOfTasks.NEW);
         Task task2 = new Task("Task-02", "Task-02 desc", StatusOfTasks.IN_PROGRESS);
         final int task1Id = manager.createTask(task1);
@@ -26,9 +28,11 @@ public class Main {
         assert task2.toString().equals(manager.getTaskById(task2Id).toString()) : "Ошибка в создании или " +
                 "возврате Task-02";
         assert task1Id != task2Id : "id равны у Task-02 Task-02";
+        historyTest = (LinkedList<Task>) manager.getHistory();
+        assert historyTest.size() == 2 && historyTest.contains(task1) && historyTest.contains(task2) : "Ошибка в " +
+                "сохранении истории Task-01 или Task-02";
         ArrayList<Task> tasks = manager.getTasks();
         assert tasks != null : "Нет задач";
-
         Epic epic1 = new Epic("Epic-01", "Epic-01 desc");
         Epic epic2 = new Epic("Epic-02", "Epic-02 desc");
         final int epic1Id = manager.createEpic(epic1);
@@ -38,6 +42,8 @@ public class Main {
         assert epic2.toString().equals(manager.getEpicById(epic2Id).toString()) : "Ошибка в создании или " +
                 "возврате Epic-02";
         assert epic1Id != epic2Id : "id равны у Epic-01 Epic-02";
+        assert historyTest.size() == 4 && historyTest.contains(epic1) && historyTest.contains(epic2) : "Ошибка в " +
+                "сохранении истории Epic-01 или Epic-02";
         ArrayList<Epic> epics = manager.getEpics();
         assert epics != null : "Нет эпиков";
 
@@ -54,10 +60,14 @@ public class Main {
         assert subTask3.toString().equals(manager.getSubTaskById(subTask3Id).toString()) :
                 "Ошибка в создании или возврате SubTask-03";
         assert subTask3Id != epic2Id : "Что-то с id";
+        assert historyTest.size() == 7 && historyTest.contains(subTask1) && historyTest.contains(subTask2)
+                && historyTest.contains(subTask3) : "Ошибка в сохранении истории SubTask-01 или SubTask-02, SubTask-03";
         ArrayList<SubTask> subTasks = manager.getSubTasks();
         assert subTasks != null : "Нет подзадач";
 
         Epic epic = manager.getEpicById(epic1Id);
+        assert historyTest.size() == 8 && historyTest.contains(epic1) : "Ошибка в сохранении истории Epic-01";
+        assert historyTest.contains(task1) : "Нет в истории Task-01";
         assert epic.getSubTaskId() != null : "Нет подзадач";
         assert epic.getSubTaskId().contains(subTask1Id) : "Нет подзадачи SubTask-01";
         assert epic.getSubTaskId().contains(subTask2Id) : "Нет подзадачи SubTask-02";
@@ -83,8 +93,14 @@ public class Main {
         assert subTask5Id != subTask2Id : "Что-то с id";
         subTasks = manager.getSubTasks();
         assert subTasks != null : "Нет подзадач";
-
+        assert historyTest.size() == 10 && historyTest.contains(subTask4) && historyTest.contains(subTask5)
+                && historyTest.contains(subTask6) && historyTest.contains(subTask7) : "Ошибка в сохранении истории " +
+                "SubTask-04 или SubTask-05, SubTask-06,SubTask-07";
+        assert historyTest.size() == 10 && !historyTest.contains(task1) && historyTest.peekFirst().equals(epic1)
+                && historyTest.peekLast().equals(subTask7) : "В истории Task-01 на первом месте. ";
         epic = manager.getEpicById(epic2Id);
+        assert historyTest.size() == 10 && historyTest.peekFirst().equals(epic2)
+                && historyTest.peekLast().equals(epic2) : "В истории Epic-02 не на первом месте.";
         assert epic.getSubTaskId() != null : "Нет подзадач";
         assert epic.getSubTaskId().contains(subTask4Id) : "Нет подзадачи SubTask-04";
         assert epic.getSubTaskId().contains(subTask5Id) : "Нет подзадачи SubTask-05";
@@ -132,6 +148,6 @@ public class Main {
         assert manager.getEpicById(epic1Id).getStatus().equals(StatusOfTasks.DONE) : "Ошибка! подсчета статуса " +
                 "эпика Epic-01 по изменению статуса подзадачи SubTask-02 на DONE";
         assert !manager.deleteEpicById(15) : "Ошибка удаления не существующего эпика ";
-        System.out.println("Успех!!!");
+        System.out.println("Успех");
     }
 }
