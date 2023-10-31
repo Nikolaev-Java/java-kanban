@@ -141,7 +141,7 @@ public class TaskManager {
         updateEpic(epic);
         calculateEpicStatus(epic.getId());
         subTasks.remove(id);
-        return false;
+        return true;
     }
 
     public ArrayList<SubTask> getSubTaskInEpic(int epicId) {
