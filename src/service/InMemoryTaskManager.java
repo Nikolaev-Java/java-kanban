@@ -21,7 +21,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int generateId = 0;
 
-
     @Override
     public ArrayList<Task> getTasks() {
         return new ArrayList<>(tasks.values());
