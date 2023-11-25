@@ -68,7 +68,9 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         return taskList;
     }
-
+    /*
+    * Если узел еденственный в списке. Голова и хвост устанавливается в NULL. Разве нет?
+    * */
     private void removeNode(Node node) {
         Node prev = node.prev;
         Node next = node.next;
