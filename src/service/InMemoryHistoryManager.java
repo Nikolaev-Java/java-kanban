@@ -41,6 +41,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
+
     public List<Task> getHistory() {
         return getTasks();
     }
@@ -59,7 +60,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private ArrayList<Task> getTasks() {
         ArrayList<Task> taskList = new ArrayList<>();
-        if(head == null) return null;
+        if (head == null) return taskList;
         taskList.add(head.data);
         Node node = head;
         while (node.next != null) {
@@ -68,9 +69,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         return taskList;
     }
+
     /*
-    * Если узел еденственный в списке. Голова и хвост устанавливается в NULL. Разве нет?
-    * */
+     * Если узел еденственный в списке. Голова и хвост устанавливается в NULL. Разве нет?
+     * */
     private void removeNode(Node node) {
         Node prev = node.prev;
         Node next = node.next;

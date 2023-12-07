@@ -19,6 +19,10 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
+
     private int generateId = 0;
 
     @Override
@@ -217,6 +221,25 @@ public class InMemoryTaskManager implements TaskManager {
                 epic.setStatus(statusSubTask);
                 epics.put(epicId, epic);
             }
+        }
+    }
+
+    protected void addTask(Task task) {
+        generateId = task.getId();
+        String typeTask = String.valueOf(task.getClass()).split(" ")[1];
+        switch (typeTask) {
+            case "model.Task": {
+                tasks.put(task.getId(), task);
+                break;
+            }
+            case "model.Epic": {
+                epics.put(task.getId(), (Epic) task);
+                break;
+            }
+            case "model.SubTask":
+                subTasks.put(task.getId(), (SubTask) task);
+                epics.get(((SubTask) task).getEpicId()).addSubTask(task.getId());
+                break;
         }
     }
 

@@ -23,12 +23,28 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{" +
-                "name='" + this.getName() + '\'' +
-                ", details='" + this.getDetails() + '\'' +
-                ", id=" + this.getId() +
-                ", status=" + this.getStatus() +
-                ", epicId=" + this.getEpicId() +
-                '}';
+        return getId() +
+                ",SUBTASK," + getName() +
+                "," + getStatus() +
+                "," + getDetails() +
+                "," + getEpicId();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SubTask subTask = (SubTask) o;
+
+        return epicId == subTask.epicId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result += 31 * result + epicId;
+        return result;
     }
 }
