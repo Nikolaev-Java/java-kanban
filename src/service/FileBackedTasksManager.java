@@ -67,23 +67,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         HashMap<Integer, Task> taskHashMap = new HashMap<>();
         List<String> dataString;
         try {
-            if (Files.exists(file)) {
-                dataString = Files.readAllLines(file);
-                for (int i = 1; i < dataString.size(); i++) {
-                    if (dataString.get(i).isEmpty()) {
-                        break;
-                    }
-                    Task task = CSVTaskFormat.fromString(dataString.get(i));
-                    if (task != null) {
-                        fileBackedTasksManager.addTask(task);
-                        taskHashMap.put(task.getId(), task);
-                    }
+            if (!Files.exists(file)) return fileBackedTasksManager;
+            dataString = Files.readAllLines(file);
+            if (dataString.isEmpty()) return fileBackedTasksManager;
+            for (int i = 1; i < dataString.size(); i++) {
+                if (dataString.get(i).isEmpty()) {
+                    break;
                 }
-                if (!dataString.get(dataString.size() - 1).isEmpty()) {
-                    List<Integer> idHistoriList = CSVTaskFormat.historyFromString(dataString.get(dataString.size() - 1));
-                    for (Integer i : idHistoriList) {
-                        fileBackedTasksManager.getHistoryManager().add(taskHashMap.get(i));
-                    }
+                Task task = CSVTaskFormat.fromString(dataString.get(i));
+                if (task != null) {
+                    fileBackedTasksManager.addTask(task);
+                    taskHashMap.put(task.getId(), task);
+                }
+            }
+            if (!dataString.get(dataString.size() - 1).isEmpty()) {
+                List<Integer> idHistoriList = CSVTaskFormat.historyFromString(dataString.get(dataString.size() - 1));
+                for (Integer i : idHistoriList) {
+                    fileBackedTasksManager.getHistoryManager().add(taskHashMap.get(i));
                 }
             }
             return fileBackedTasksManager;

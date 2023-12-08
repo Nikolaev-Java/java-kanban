@@ -1,7 +1,7 @@
 package exception;
 
 
-public class ManagerSaveException extends Error {
+public class ManagerSaveException extends RuntimeException {
     public ManagerSaveException() {
     }
 

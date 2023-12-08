@@ -74,6 +74,7 @@ public class InMemoryHistoryManager implements HistoryManager {
      * Если узел еденственный в списке. Голова и хвост устанавливается в NULL. Разве нет?
      * */
     private void removeNode(Node node) {
+        if(node == null) return;
         Node prev = node.prev;
         Node next = node.next;
         if (prev != null) {
