@@ -13,6 +13,25 @@ public class CSVTaskFormat {
     private CSVTaskFormat() {
     }
 
+    public static String TaskToSting(Task task) {
+        if (task instanceof Epic) {
+            return task.getId() +
+                    ",EPIC," + task.getName() +
+                    "," + task.getStatus() +
+                    "," + task.getDetails();
+        }
+        if (task instanceof SubTask) {
+            return task.getId() +
+                    ",SUBTASK," + task.getName() +
+                    "," + task.getStatus() +
+                    "," + task.getDetails() +
+                    "," + ((SubTask) task).getEpicId();
+        }
+        return task.getId() +
+                ",TASK," + task.getName() +
+                "," + task.getStatus() +
+                "," + task.getDetails();
+    }
 
     public static String historyToString(HistoryManager manager) {
         List<Task> taskList = manager.getHistory();

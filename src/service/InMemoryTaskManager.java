@@ -223,8 +223,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    protected void addTask(Task task) {
-        generateId = task.getId();
+    protected void addTask(Task task, int id) {
+        generateId = id;
         if(task instanceof Epic){
             epics.put(task.getId(), (Epic) task);
         } else if (task instanceof SubTask) {

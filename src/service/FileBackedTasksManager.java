@@ -32,6 +32,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         fileManager1.getSubTaskById(subTask1Id);
         FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile("src/resources/data.csv");
         final int epic2Id = fileManager.createEpic(new Epic("Epic-02", "Epic-02 desc"));
+        FileBackedTasksManager fileManager2 = FileBackedTasksManager.loadFromFile("src/resources/data.csv");
         assert epic2Id != task1id && epic2Id != epic1Id && epic2Id != subTask1Id :
                 "Неверная генерация id после загрузки истории";
         assert fileManager1.getTaskById(task1id).equals(fileManager.getTaskById(task1id)) :
@@ -50,7 +51,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         StringBuilder resultToSave = new StringBuilder();
         resultToSave.append(HEADING_STRING).append("\n");
         for (Task task : taskList) {
-            resultToSave.append(task.toString()).append("\n");
+            resultToSave.append(CSVTaskFormat.TaskToSting(task)).append("\n");
+
         }
         resultToSave.append("\n");
         resultToSave.append(CSVTaskFormat.historyToString(super.getHistoryManager()));
@@ -66,6 +68,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(fileName);
         HashMap<Integer, Task> taskHashMap = new HashMap<>();
         List<String> dataString;
+        int maxId = 0;
         try {
             if (!Files.exists(file)) return fileBackedTasksManager;
             dataString = Files.readAllLines(file);
@@ -76,7 +79,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
                 Task task = CSVTaskFormat.fromString(dataString.get(i));
                 if (task != null) {
-                    fileBackedTasksManager.addTask(task);
+                    if (task.getId() > maxId) {
+                        maxId = task.getId();
+                    }
+                    fileBackedTasksManager.addTask(task,maxId);
                     taskHashMap.put(task.getId(), task);
                 }
             }
