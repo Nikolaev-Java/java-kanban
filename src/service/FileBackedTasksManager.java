@@ -32,7 +32,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         fileManager1.getSubTaskById(subTask1Id);
         FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile("src/resources/data.csv");
         final int epic2Id = fileManager.createEpic(new Epic("Epic-02", "Epic-02 desc"));
-        FileBackedTasksManager fileManager2 = FileBackedTasksManager.loadFromFile("src/resources/data.csv");
         assert epic2Id != task1id && epic2Id != epic1Id && epic2Id != subTask1Id :
                 "Неверная генерация id после загрузки истории";
         assert fileManager1.getTaskById(task1id).equals(fileManager.getTaskById(task1id)) :

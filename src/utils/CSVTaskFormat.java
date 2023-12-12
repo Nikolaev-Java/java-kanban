@@ -7,7 +7,9 @@ import model.Task;
 import service.HistoryManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CSVTaskFormat {
     private CSVTaskFormat() {
@@ -35,20 +37,16 @@ public class CSVTaskFormat {
 
     public static String historyToString(HistoryManager manager) {
         List<Task> taskList = manager.getHistory();
-        ArrayList<String> idHistory = new ArrayList<>();
-        for (Task task : taskList) {
-            idHistory.add(String.valueOf(task.getId()));
-        }
-        return String.join(",", idHistory.toArray(new String[0]));
+        return String.join(",", taskList.stream()
+                .map(task -> String.valueOf(task.getId()))
+                .toArray(String[]::new));
     }
 
     public static List<Integer> historyFromString(String value) {
-        List<Integer> historyList = new ArrayList<>();
         String[] valueArr = value.split(",");
-        for (String s : valueArr) {
-            historyList.add(Integer.parseInt(s));
-        }
-        return historyList;
+        return Arrays.stream(valueArr)
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
     }
 
     public static Task fromString(String value) {
