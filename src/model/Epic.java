@@ -7,14 +7,17 @@ public class Epic extends Task {
 
     public Epic(String name, String details, int id) {
         super(name, details, id, StatusOfTasks.NEW);
+        setType(TaskTypes.Epic);
     }
 
     public Epic(String name, String details, int id, StatusOfTasks status) {
         super(name, details, id, status);
+        setType(TaskTypes.Epic);
     }
 
     public Epic(String name, String details) {
         super(name, details, StatusOfTasks.NEW);
+        setType(TaskTypes.Epic);
     }
 
     public void addSubTask(int subTaskId) {

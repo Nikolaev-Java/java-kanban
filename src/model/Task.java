@@ -7,18 +7,21 @@ public class Task {
     private String details;
     private int id;
     private StatusOfTasks status;
+    private TaskTypes type;
 
     public Task(String name, String details, int id, StatusOfTasks status) {
         this.name = name;
         this.details = details;
         this.id = id;
         this.status = status;
+        this.type = TaskTypes.Task;
     }
 
     public Task(String name, String details, StatusOfTasks status) {
         this.name = name;
         this.details = details;
         this.status = status;
+        this.type = TaskTypes.Task;
     }
 
     public String getName() {
@@ -53,6 +56,14 @@ public class Task {
         this.status = status;
     }
 
+    public TaskTypes getType() {
+        return type;
+    }
+
+    public void setType(TaskTypes type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -73,7 +84,8 @@ public class Task {
         if (id != task.id) return false;
         if (!name.equals(task.name)) return false;
         if (!details.equals(task.details)) return false;
-        return status == task.status;
+        if (status != task.status) return false;
+        return type == task.type;
     }
 
     @Override
@@ -82,6 +94,7 @@ public class Task {
         result += 31 * result + details.hashCode();
         result += 31 * result + id;
         result += 31 * result + status.hashCode();
+        result += 31 * result + type.hashCode();
         return result;
     }
 }

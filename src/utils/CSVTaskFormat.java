@@ -4,9 +4,9 @@ import model.Epic;
 import model.StatusOfTasks;
 import model.SubTask;
 import model.Task;
+import model.TaskTypes;
 import service.HistoryManager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,13 +16,14 @@ public class CSVTaskFormat {
     }
 
     public static String TaskToSting(Task task) {
-        if (task instanceof Epic) {
+        TaskTypes typeTask = task.getType();
+        if (typeTask.equals(TaskTypes.Epic)) {
             return task.getId() +
                     ",EPIC," + task.getName() +
                     "," + task.getStatus() +
                     "," + task.getDetails();
         }
-        if (task instanceof SubTask) {
+        if (typeTask.equals(TaskTypes.SubTask)) {
             return task.getId() +
                     ",SUBTASK," + task.getName() +
                     "," + task.getStatus() +
