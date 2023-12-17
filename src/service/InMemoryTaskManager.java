@@ -4,6 +4,7 @@ import model.Epic;
 import model.StatusOfTasks;
 import model.SubTask;
 import model.Task;
+import model.TaskTypes;
 import utils.Managers;
 
 import java.util.ArrayList;
@@ -225,9 +226,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected void addTask(Task task, int id) {
         generateId = id;
-        if(task instanceof Epic){
+        TaskTypes type = task.getType();
+        if(type.equals(TaskTypes.Epic)){
             epics.put(task.getId(), (Epic) task);
-        } else if (task instanceof SubTask) {
+        } else if (type.equals(TaskTypes.SubTask)) {
             subTasks.put(task.getId(), (SubTask) task);
             epics.get(((SubTask) task).getEpicId()).addSubTask(task.getId());
         } else {
