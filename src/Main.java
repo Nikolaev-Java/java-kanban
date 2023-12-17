@@ -139,7 +139,6 @@ public class Main {
         manager.deleteAllTasks();
         assert manager.getTasks().isEmpty() : "Задачи не удалены";
 
-
         subTask1.setStatus(StatusOfTasks.IN_PROGRESS);
         manager.updateSubTask(subTask1);
         assert manager.getEpicById(epic1Id).getStatus().equals(StatusOfTasks.IN_PROGRESS) : "Не изменился статус " +
