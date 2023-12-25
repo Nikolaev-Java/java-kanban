@@ -1,5 +1,7 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -8,20 +10,43 @@ public class Task {
     private int id;
     private StatusOfTasks status;
     private TaskTypes type;
+    private long duration;
+    private LocalDateTime startTime;
 
     public Task(String name, String details, int id, StatusOfTasks status) {
         this.name = name;
         this.details = details;
         this.id = id;
         this.status = status;
-        this.type = TaskTypes.Task;
+        this.type = TaskTypes.TASK;
     }
 
-    public Task(String name, String details, StatusOfTasks status) {
+    public Task(String name, String details, int id, StatusOfTasks status, long duration, LocalDateTime startTime) {
+        this.name = name;
+        this.details = details;
+        this.id = id;
+        this.status = status;
+        this.type = TaskTypes.TASK;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Task(String name, String details, StatusOfTasks status, long duration, LocalDateTime startTime) {
         this.name = name;
         this.details = details;
         this.status = status;
-        this.type = TaskTypes.Task;
+        this.type = TaskTypes.TASK;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Task(String name, String details, StatusOfTasks status, long duration) {
+        this.name = name;
+        this.details = details;
+        this.status = status;
+        this.type = TaskTypes.TASK;
+        this.duration = duration;
+        this.startTime = null;
     }
 
     public String getName() {
@@ -34,6 +59,14 @@ public class Task {
 
     public String getDetails() {
         return details;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public long getDuration() {
+        return duration;
     }
 
     public void setDetails(String details) {
@@ -64,6 +97,19 @@ public class Task {
         this.type = type;
     }
 
+    public LocalDateTime getEndTime() {
+        if (startTime == null) return null;
+        return startTime.plus(Duration.ofMinutes(duration));
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -71,6 +117,9 @@ public class Task {
                 ", details='" + details + '\'' +
                 ", id=" + id +
                 ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", endTime=" + getEndTime() +
                 '}';
     }
 
@@ -85,6 +134,8 @@ public class Task {
         if (!name.equals(task.name)) return false;
         if (!details.equals(task.details)) return false;
         if (status != task.status) return false;
+        if (duration != task.duration) return false;
+        if (!Objects.equals(startTime, task.startTime)) return false;
         return type == task.type;
     }
 
@@ -95,6 +146,8 @@ public class Task {
         result += 31 * result + id;
         result += 31 * result + status.hashCode();
         result += 31 * result + type.hashCode();
+        result += 31 * result + (int) duration;
+        result += 31 * result + startTime.hashCode();
         return result;
     }
 }

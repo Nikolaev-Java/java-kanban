@@ -1,23 +1,43 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Epic extends Task {
     private final ArrayList<Integer> subTaskId = new ArrayList<>();
+    private LocalDateTime endTime;
 
     public Epic(String name, String details, int id) {
         super(name, details, id, StatusOfTasks.NEW);
-        setType(TaskTypes.Epic);
+        setType(TaskTypes.EPIC);
     }
 
-    public Epic(String name, String details, int id, StatusOfTasks status) {
-        super(name, details, id, status);
-        setType(TaskTypes.Epic);
+    public Epic(String name, String details, int id, LocalDateTime startTime) {
+        super(name, details, id, StatusOfTasks.NEW, 0, startTime);
+        setType(TaskTypes.EPIC);
+    }
+
+    public Epic(String name, String details, int id, StatusOfTasks status, LocalDateTime startTime) {
+        super(name, details, id, status, 0, startTime);
+        setType(TaskTypes.EPIC);
+    }
+
+    public Epic(String name, String details, int id, StatusOfTasks status, long duration,
+                LocalDateTime startTime, LocalDateTime endTime) {
+        super(name, details, id, status, duration, startTime);
+        setType(TaskTypes.EPIC);
+        this.endTime = endTime;
+    }
+
+    public Epic(String name, String details, LocalDateTime startTime) {
+        super(name, details, StatusOfTasks.NEW, 0, startTime);
+        setType(TaskTypes.EPIC);
     }
 
     public Epic(String name, String details) {
-        super(name, details, StatusOfTasks.NEW);
-        setType(TaskTypes.Epic);
+        super(name, details, StatusOfTasks.NEW, 0, null);
+        setType(TaskTypes.EPIC);
     }
 
     public void addSubTask(int subTaskId) {
@@ -32,6 +52,15 @@ public class Epic extends Task {
         subTaskId.remove((Integer) id);
     }
 
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
     @Override
     public String toString() {
         return "Epic{" +
@@ -40,6 +69,9 @@ public class Epic extends Task {
                 ", id=" + this.getId() +
                 ", status=" + this.getStatus() +
                 ", subTasks=" + subTaskId +
+                ", duration=" + this.getDuration() +
+                ", startTime=" + this.getStartTime() +
+                ", endTime=" + endTime +
                 '}';
     }
 
@@ -51,7 +83,8 @@ public class Epic extends Task {
 
         Epic epic = (Epic) o;
 
-        return subTaskId.equals(epic.subTaskId);
+        if (!subTaskId.equals(epic.subTaskId)) return false;
+        return Objects.equals(endTime, epic.endTime);
     }
 
     @Override

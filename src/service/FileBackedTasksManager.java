@@ -2,7 +2,6 @@ package service;
 
 import exception.ManagerSaveException;
 import model.Epic;
-import model.StatusOfTasks;
 import model.SubTask;
 import model.Task;
 import utils.CSVTaskFormat;
@@ -17,30 +16,10 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private final Path fileData;
-    private static final String HEADING_STRING = "id,type,name,status,description,epic";
+    private static final String HEADING_STRING = "id,type,name,status,description,startTime,duration,endTime,epic";
 
     public FileBackedTasksManager(String fileDataURI) {
         this.fileData = Paths.get(fileDataURI);
-    }
-
-    public static void main(String[] args) {
-        FileBackedTasksManager fileManager1 = new FileBackedTasksManager("src/resources/data.csv");
-        final int task1id = fileManager1.createTask(new Task("Task-01", "Task-01 desc", StatusOfTasks.NEW));
-        final int epic1Id = fileManager1.createEpic(new Epic("Epic-01", "Epic-01 desc"));
-        final int subTask1Id = fileManager1.createSubTask(new SubTask("SubTask-01", "SubTask-01 desc", StatusOfTasks.NEW, epic1Id));
-        fileManager1.getTaskById(task1id);
-        fileManager1.getSubTaskById(subTask1Id);
-        FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile("src/resources/data.csv");
-        final int epic2Id = fileManager.createEpic(new Epic("Epic-02", "Epic-02 desc"));
-        assert epic2Id != task1id && epic2Id != epic1Id && epic2Id != subTask1Id :
-                "Неверная генерация id после загрузки истории";
-        assert fileManager1.getTaskById(task1id).equals(fileManager.getTaskById(task1id)) :
-                "Задачи Task-01 не совпадают";
-        assert fileManager.getEpicById(epic1Id).equals(fileManager1.getEpicById(epic1Id)) :
-                "Задачи Epic-01 не совпадают";
-        assert fileManager1.getSubTaskById(subTask1Id).equals(fileManager.getSubTaskById(subTask1Id)) :
-                "Задачи SubTask-01 не совпадают";
-        assert fileManager1.getHistory().equals(fileManager.getHistory()) : "История не одинаковая";
     }
 
     private void save() throws ManagerSaveException {
@@ -81,7 +60,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     if (task.getId() > maxId) {
                         maxId = task.getId();
                     }
-                    fileBackedTasksManager.addTask(task,maxId);
+                    fileBackedTasksManager.addTask(task, maxId);
                     taskHashMap.put(task.getId(), task);
                 }
             }
