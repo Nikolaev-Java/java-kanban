@@ -9,7 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
     private final String URL = "src/resources/data.csv";
@@ -31,7 +32,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         List<String> expectedStringList = List.of("id,type,name,status,description,startTime,duration,endTime,epic",
                 "1,TASK,Task-01,NEW,Task-01 desc,2023-01-04T15:00,10,2023-01-04T15:10",
                 "2,TASK,Task-02,IN_PROGRESS,Task-02 desc,2023-01-03T15:00,10,2023-01-03T15:10",
-                "3,EPIC,Epic-01,IN_PROGRESS,Epic-01 desc,2023-01-01T15:00,10,2023-01-02T15:10",
+                "3,EPIC,Epic-01,IN_PROGRESS,Epic-01 desc,2023-01-01T15:00,10,2023-01-01T15:10",
                 "4,EPIC,Epic-02,NEW,Epic-02 desc,null,0,null",
                 "5,SUBTASK,SubTask-01,NEW,SubTask-01 desc,2023-01-01T15:00,10,2023-01-01T15:10,3",
                 "6,SUBTASK,SubTask-02,DONE,SubTask-02 desc,2023-01-02T15:00,10,2023-01-02T15:10,3",

@@ -308,7 +308,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void shouldNotUpdateSubTaskAfterChangeTimeSubTaskIfIsCrossingDate() {
         int idTask = manager.createSubTask(new SubTask("test Task", "desc", StatusOfTasks.NEW, epic2Id,
                 5, LocalDateTime.of(2023, 3, 14, 15, 10)));
-        SubTask task = new SubTask("test Task", "desc", idTask, StatusOfTasks.NEW,  epic2Id,65,
+        SubTask task = new SubTask("test Task", "desc", idTask, StatusOfTasks.NEW, epic2Id, 65,
                 startTime3);
         assertFalse(manager.updateSubTask(task));
         final ManagerCreateException exception = assertThrows(ManagerCreateException.class, new Executable() {
@@ -488,7 +488,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 10, startTime3));
         manager.createSubTask(new SubTask("test", "desc", StatusOfTasks.IN_PROGRESS, epic2Id,
                 10, startTime2));
-        manager.createSubTask(new SubTask("test", "desc", StatusOfTasks.IN_PROGRESS, epic2Id,
+        int id = manager.createSubTask(new SubTask("test", "desc", StatusOfTasks.NEW, epic2Id,
                 10, startTime1));
         assertEquals(startTime1, manager.getEpicById(epic2Id).getStartTime());
         assertEquals(endTime, manager.getEpicById(epic2Id).getEndTime());

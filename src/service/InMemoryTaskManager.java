@@ -304,7 +304,6 @@ public class InMemoryTaskManager implements TaskManager {
             epics.put(task.getId(), (Epic) task);
         } else if (type.equals(TaskTypes.SUBTASK)) {
             subTasks.put(task.getId(), (SubTask) task);
-            epics.get(((SubTask) task).getEpicId()).addSubTask(task.getId());
         } else {
             tasks.put(task.getId(), task);
         }
@@ -319,11 +318,13 @@ public class InMemoryTaskManager implements TaskManager {
     private void calculateTimeEpic(Epic epic) {
         List<SubTask> subTaskList = getSubTaskInEpic(epic.getId());
         epic.setEndTime(subTaskList.stream()
+                .filter(subTask -> !subTask.getStatus().equals(StatusOfTasks.DONE))
                 .map(SubTask::getEndTime)
                 .filter(Objects::nonNull)
                 .max(LocalDateTime::compareTo)
                 .orElse(null));
         epic.setStartTime(subTaskList.stream()
+                .filter(subTask -> !subTask.getStatus().equals(StatusOfTasks.DONE))
                 .map(SubTask::getStartTime)
                 .filter(Objects::nonNull)
                 .min(LocalDateTime::compareTo)

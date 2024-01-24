@@ -4,6 +4,7 @@ import exception.ManagerSaveException;
 import model.Epic;
 import model.SubTask;
 import model.Task;
+import model.TaskTypes;
 import utils.CSVTaskFormat;
 
 import java.io.IOException;
@@ -15,14 +16,18 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private final Path fileData;
+    private Path fileData;
     private static final String HEADING_STRING = "id,type,name,status,description,startTime,duration,endTime,epic";
 
     public FileBackedTasksManager(String fileDataURI) {
-        this.fileData = Paths.get(fileDataURI);
+        try {
+            this.fileData = Paths.get(fileDataURI);
+        } catch (IllegalArgumentException e) {
+
+        }
     }
 
-    private void save() throws ManagerSaveException {
+    protected void save() throws ManagerSaveException {
         List<Task> taskList = getTasks();
         taskList.addAll(getEpics());
         taskList.addAll(getSubTasks());
@@ -59,6 +64,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 if (task != null) {
                     if (task.getId() > maxId) {
                         maxId = task.getId();
+                    }
+                    if (task.getType().equals(TaskTypes.SUBTASK)) {
+                        Epic epic = (Epic) taskHashMap.get((((SubTask) task).getEpicId()));
+                        epic.addSubTask(task.getId());
                     }
                     fileBackedTasksManager.addTask(task, maxId);
                     taskHashMap.put(task.getId(), task);
