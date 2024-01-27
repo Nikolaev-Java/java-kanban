@@ -9,7 +9,7 @@ import model.SubTask;
 import model.Task;
 import model.TaskTypes;
 import service.TaskManager;
-import utils.Managers;
+import service.Managers;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -1,5 +1,7 @@
 package server;
 
+import exception.TaskClientException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -11,14 +13,19 @@ public class KVTaskClient {
     private final String url;
     private final String apiToken;
 
-    public KVTaskClient(String url) throws IOException, InterruptedException {
+    public KVTaskClient(String url) {
         client = HttpClient.newHttpClient();
         this.url = url;
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(url + "/register"))
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            throw new TaskClientException("Ошибка при регистрации",e);
+        }
         apiToken = response.body();
     }
 
@@ -29,7 +36,7 @@ public class KVTaskClient {
                 .build();
         HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
         if (response.statusCode() != 200) {
-            throw new RuntimeException();
+            throw new TaskClientException("Сохранение не удалось. Код ошибки - " + response.statusCode());
         }
     }
 
@@ -40,7 +47,7 @@ public class KVTaskClient {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
-            throw new RuntimeException();
+            throw new TaskClientException("Загрузить не удалось. Код ошибки - " + response.statusCode());
         }
         return response.body();
     }
