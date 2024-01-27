@@ -15,22 +15,24 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class HistoryManagerTest {
     private HistoryManager historyManager;
-    private Task task;
-    private Epic epic;
-    private SubTask subTask;
-    private LocalDateTime startTime;
 
     @BeforeEach
     void initHistory() {
         historyManager = Managers.getDefaultHistory();
-        startTime = LocalDateTime.of(2023, 12, 1, 15, 0);
-        task = new Task("Task-01", "Task-01 desc", 1, StatusOfTasks.NEW, 10, startTime);
-        epic = new Epic("Epic-01", "Epic-01 desc", 2, startTime);
-        subTask = new SubTask("SubTask-01", "SubTask-01 desc", 3, StatusOfTasks.NEW, 2, 10, startTime);
+        LocalDateTime startTime = LocalDateTime.of(2023, 12, 1, 15, 0);
+        Task task = new Task("Task-01", "Task-01 desc", 1, StatusOfTasks.NEW, 10, startTime);
+        Epic epic = new Epic("Epic-01", "Epic-01 desc", 2, startTime);
+        SubTask subTask = new SubTask("SubTask-01", "SubTask-01 desc", 3, StatusOfTasks.NEW,
+                2, 10, startTime);
     }
 
     @Test
     void shouldAddTasksInHistoryManagerWhenAddTask() {
+        LocalDateTime startTime = LocalDateTime.of(2023, 12, 1, 15, 0);
+        Task task = new Task("Task-01", "Task-01 desc", 1, StatusOfTasks.NEW, 10, startTime);
+        Epic epic = new Epic("Epic-01", "Epic-01 desc", 2, startTime);
+        SubTask subTask = new SubTask("SubTask-01", "SubTask-01 desc", 3, StatusOfTasks.NEW,
+                2, 10, startTime);
         historyManager.add(task);
         historyManager.add(epic);
         historyManager.add(subTask);
@@ -41,6 +43,11 @@ class HistoryManagerTest {
 
     @Test
     void shouldNoDuplicateTaskInHistoryManagerWhenAddTask() {
+        LocalDateTime startTime = LocalDateTime.of(2023, 12, 1, 15, 0);
+        Task task = new Task("Task-01", "Task-01 desc", 1, StatusOfTasks.NEW, 10, startTime);
+        Epic epic = new Epic("Epic-01", "Epic-01 desc", 2, startTime);
+        SubTask subTask = new SubTask("SubTask-01", "SubTask-01 desc", 3, StatusOfTasks.NEW,
+                2, 10, startTime);
         historyManager.add(task);
         historyManager.add(epic);
         historyManager.add(subTask);
@@ -51,6 +58,8 @@ class HistoryManagerTest {
 
     @Test
     void shouldRemoveTaskInHistoryManagerWhenTaskOnlyOne() {
+        LocalDateTime startTime = LocalDateTime.of(2023, 12, 1, 15, 0);
+        Task task = new Task("Task-01", "Task-01 desc", 1, StatusOfTasks.NEW, 10, startTime);
         historyManager.add(task);
         historyManager.remove(1);
         assertEquals(0, historyManager.getHistory().size());
@@ -58,6 +67,11 @@ class HistoryManagerTest {
 
     @Test
     void shouldRemoveTaskInHistoryManagerWhenTaskBegin() {
+        LocalDateTime startTime = LocalDateTime.of(2023, 12, 1, 15, 0);
+        Task task = new Task("Task-01", "Task-01 desc", 1, StatusOfTasks.NEW, 10, startTime);
+        Epic epic = new Epic("Epic-01", "Epic-01 desc", 2, startTime);
+        SubTask subTask = new SubTask("SubTask-01", "SubTask-01 desc", 3, StatusOfTasks.NEW,
+                2, 10, startTime);
         historyManager.add(task);
         historyManager.add(epic);
         historyManager.add(subTask);
@@ -68,6 +82,11 @@ class HistoryManagerTest {
 
     @Test
     void shouldRemoveTaskInHistoryManagerWhenTaskMiddle() {
+        LocalDateTime startTime = LocalDateTime.of(2023, 12, 1, 15, 0);
+        Task task = new Task("Task-01", "Task-01 desc", 1, StatusOfTasks.NEW, 10, startTime);
+        Epic epic = new Epic("Epic-01", "Epic-01 desc", 2, startTime);
+        SubTask subTask = new SubTask("SubTask-01", "SubTask-01 desc", 3, StatusOfTasks.NEW,
+                2, 10, startTime);
         historyManager.add(task);
         historyManager.add(epic);
         historyManager.add(subTask);
@@ -78,6 +97,11 @@ class HistoryManagerTest {
 
     @Test
     void shouldRemoveTaskInHistoryManagerWhenTaskEnd() {
+        LocalDateTime startTime = LocalDateTime.of(2023, 12, 1, 15, 0);
+        Task task = new Task("Task-01", "Task-01 desc", 1, StatusOfTasks.NEW, 10, startTime);
+        Epic epic = new Epic("Epic-01", "Epic-01 desc", 2, startTime);
+        SubTask subTask = new SubTask("SubTask-01", "SubTask-01 desc", 3, StatusOfTasks.NEW,
+                2, 10, startTime);
         historyManager.add(task);
         historyManager.add(epic);
         historyManager.add(subTask);

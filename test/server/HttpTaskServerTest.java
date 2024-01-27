@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static server.EndPointConst.*;
 
 class HttpTaskServerTest {
     private HttpTaskServer server;
@@ -30,12 +29,6 @@ class HttpTaskServerTest {
 
     private TaskManager taskManager;
     private final Gson gson = Managers.getGson();
-    private Task expectedTask;
-    private int idTask;
-    private Epic expectedEpic;
-    private int idEpic;
-    private SubTask expectedSubTask;
-    private int idSubTask;
 
     @BeforeEach
     void init() throws IOException, InterruptedException {
@@ -43,14 +36,6 @@ class HttpTaskServerTest {
         server = new HttpTaskServer(taskManager);
         server.start();
         client = HttpClient.newHttpClient();
-        expectedTask = new Task("task", "desc", StatusOfTasks.NEW,
-                10, LocalDateTime.of(2023, 01, 01, 15, 00));
-        expectedEpic = new Epic("epic", "desc");
-        idTask = taskManager.createTask(expectedTask);
-        idEpic = taskManager.createEpic(expectedEpic);
-        expectedSubTask = new SubTask("subTask", "desc", StatusOfTasks.NEW, idEpic,
-                10, LocalDateTime.of(2023, 01, 02, 15, 00));
-        idSubTask = taskManager.createSubTask(expectedSubTask);
     }
 
     @AfterEach
@@ -60,8 +45,11 @@ class HttpTaskServerTest {
 
     @Test
     void getTask() throws IOException, InterruptedException {
+        Task expectedTask = new Task("task", "desc", StatusOfTasks.NEW,
+                10, LocalDateTime.of(2023, 01, 01, 15, 00));
+        int idTask = taskManager.createTask(expectedTask);
         List<Task> expectedListTask = List.of(expectedTask);
-        URI url = URI.create(TASK_END_POINT);
+        URI url = URI.create(EndPointConst.TASK_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -71,7 +59,7 @@ class HttpTaskServerTest {
         }.getType());
         assertEquals(200, response.statusCode());
         assertEquals(expectedListTask, taskList);
-        url = URI.create(TASK_ID_END_POINT + idTask);
+        url = URI.create(EndPointConst.TASK_ID_END_POINT + idTask);
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -79,7 +67,7 @@ class HttpTaskServerTest {
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         Task task = gson.fromJson(response.body(), Task.class);
         assertEquals(expectedTask, task);
-        url = URI.create(TASK_ID_END_POINT + 2);
+        url = URI.create(EndPointConst.TASK_ID_END_POINT + 2);
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -90,7 +78,7 @@ class HttpTaskServerTest {
 
     @Test
     void deleteTasks() throws IOException, InterruptedException {
-        URI url = URI.create(TASK_END_POINT);
+        URI url = URI.create(EndPointConst.TASK_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
@@ -101,14 +89,17 @@ class HttpTaskServerTest {
 
     @Test
     void deleteByIDTasks() throws IOException, InterruptedException {
-        URI url = URI.create(TASK_ID_END_POINT + idTask);
+        Task expectedTask = new Task("task", "desc", StatusOfTasks.NEW,
+                10, LocalDateTime.of(2023, 01, 01, 15, 00));
+        int idTask = taskManager.createTask(expectedTask);
+        URI url = URI.create(EndPointConst.TASK_ID_END_POINT + idTask);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
-        url = URI.create(TASK_ID_END_POINT + 5);
+        url = URI.create(EndPointConst.TASK_ID_END_POINT + 5);
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
@@ -120,7 +111,7 @@ class HttpTaskServerTest {
     @Test
     void addTask() throws IOException, InterruptedException {
         String jsonTask = gson.toJson(new Task("task-01", "desc", StatusOfTasks.NEW, 10));
-        URI url = URI.create(TASK_END_POINT);
+        URI url = URI.create(EndPointConst.TASK_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(jsonTask.getBytes()))
@@ -138,8 +129,11 @@ class HttpTaskServerTest {
 
     @Test
     void updateTask() throws IOException, InterruptedException {
+        Task expectedTask = new Task("task", "desc", StatusOfTasks.NEW,
+                10, LocalDateTime.of(2023, 01, 01, 15, 00));
+        int idTask = taskManager.createTask(expectedTask);
         String jsonTask = gson.toJson(expectedTask);
-        URI url = URI.create(TASK_ID_END_POINT + idTask);
+        URI url = URI.create(EndPointConst.TASK_ID_END_POINT + idTask);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(jsonTask.getBytes()))
@@ -157,8 +151,10 @@ class HttpTaskServerTest {
 
     @Test
     void getEpic() throws IOException, InterruptedException {
+        Epic expectedEpic = new Epic("epic", "desc");
+        int idEpic = taskManager.createEpic(expectedEpic);
         List<Epic> expectedListEpic = List.of(expectedEpic);
-        URI url = URI.create(EPIC_END_POINT);
+        URI url = URI.create(EndPointConst.EPIC_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -168,7 +164,7 @@ class HttpTaskServerTest {
         }.getType());
         assertEquals(200, response.statusCode());
         assertEquals(expectedListEpic, epicList);
-        url = URI.create(EPIC_ID_END_POINT + idEpic);
+        url = URI.create(EndPointConst.EPIC_ID_END_POINT + idEpic);
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -176,7 +172,7 @@ class HttpTaskServerTest {
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         Epic epic = gson.fromJson(response.body(), Epic.class);
         assertEquals(expectedEpic, epic);
-        url = URI.create(EPIC_ID_END_POINT + 3);
+        url = URI.create(EndPointConst.EPIC_ID_END_POINT + 3);
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -187,7 +183,7 @@ class HttpTaskServerTest {
 
     @Test
     void deleteEpics() throws IOException, InterruptedException {
-        URI url = URI.create(EPIC_END_POINT);
+        URI url = URI.create(EndPointConst.EPIC_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
@@ -198,14 +194,16 @@ class HttpTaskServerTest {
 
     @Test
     void deleteByIDEpic() throws IOException, InterruptedException {
-        URI url = URI.create(EPIC_ID_END_POINT + idEpic);
+        Epic expectedEpic = new Epic("epic", "desc");
+        int idEpic = taskManager.createEpic(expectedEpic);
+        URI url = URI.create(EndPointConst.EPIC_ID_END_POINT + idEpic);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
-        url = URI.create(EPIC_ID_END_POINT + 5);
+        url = URI.create(EndPointConst.EPIC_ID_END_POINT + 5);
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
@@ -216,9 +214,11 @@ class HttpTaskServerTest {
 
     @Test
     void addEpic() throws IOException, InterruptedException {
+        Epic expectedEpic = new Epic("epic", "desc");
+        int idEpic = taskManager.createEpic(expectedEpic);
         String jsonTask = gson.toJson(expectedEpic);
         System.out.println(jsonTask);
-        URI url = URI.create(EPIC_END_POINT);
+        URI url = URI.create(EndPointConst.EPIC_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(jsonTask.getBytes()))
@@ -236,8 +236,10 @@ class HttpTaskServerTest {
 
     @Test
     void updateEpic() throws IOException, InterruptedException {
+        Epic expectedEpic = new Epic("epic", "desc");
+        int idEpic = taskManager.createEpic(expectedEpic);
         String jsonTask = gson.toJson(expectedEpic);
-        URI url = URI.create(EPIC_ID_END_POINT + idEpic);
+        URI url = URI.create(EndPointConst.EPIC_ID_END_POINT + idEpic);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(jsonTask.getBytes()))
@@ -255,8 +257,13 @@ class HttpTaskServerTest {
 
     @Test
     void getSubTask() throws IOException, InterruptedException {
+        Epic expectedEpic = new Epic("epic", "desc");
+        int idEpic = taskManager.createEpic(expectedEpic);
+        SubTask expectedSubTask = new SubTask("subTask", "desc", StatusOfTasks.NEW, idEpic,
+                10, LocalDateTime.of(2023, 01, 02, 15, 00));
+        int idSubTask = taskManager.createSubTask(expectedSubTask);
         List<Task> expectedListSubTask = List.of(expectedSubTask);
-        URI url = URI.create(SUBTASK_END_POINT);
+        URI url = URI.create(EndPointConst.SUBTASK_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -266,7 +273,7 @@ class HttpTaskServerTest {
         }.getType());
         assertEquals(200, response.statusCode());
         assertEquals(expectedListSubTask, subTaskList);
-        url = URI.create(SUBTASK_ID_END_POINT + idSubTask);
+        url = URI.create(EndPointConst.SUBTASK_ID_END_POINT + idSubTask);
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -274,7 +281,7 @@ class HttpTaskServerTest {
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         SubTask subTask = gson.fromJson(response.body(), SubTask.class);
         assertEquals(expectedSubTask, subTask);
-        url = URI.create(SUBTASK_ID_END_POINT + 2);
+        url = URI.create(EndPointConst.SUBTASK_ID_END_POINT + 4);
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -285,9 +292,11 @@ class HttpTaskServerTest {
 
     @Test
     void addSubTask() throws IOException, InterruptedException {
+        Epic expectedEpic = new Epic("epic", "desc");
+        int idEpic = taskManager.createEpic(expectedEpic);
         String jsonTask = gson.toJson(new SubTask("subTask-02", "desc", StatusOfTasks.NEW,
                 idEpic, 10));
-        URI url = URI.create(SUBTASK_END_POINT);
+        URI url = URI.create(EndPointConst.SUBTASK_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(jsonTask.getBytes()))
@@ -305,7 +314,7 @@ class HttpTaskServerTest {
 
     @Test
     void deleteSubTasks() throws IOException, InterruptedException {
-        URI url = URI.create(SUBTASK_END_POINT);
+        URI url = URI.create(EndPointConst.SUBTASK_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
@@ -316,14 +325,19 @@ class HttpTaskServerTest {
 
     @Test
     void deleteByIDSubTasks() throws IOException, InterruptedException {
-        URI url = URI.create(SUBTASK_ID_END_POINT + idSubTask);
+        Epic expectedEpic = new Epic("epic", "desc");
+        int idEpic = taskManager.createEpic(expectedEpic);
+        SubTask expectedSubTask = new SubTask("subTask", "desc", StatusOfTasks.NEW, idEpic,
+                10, LocalDateTime.of(2023, 01, 02, 15, 00));
+        int idSubTask = taskManager.createSubTask(expectedSubTask);
+        URI url = URI.create(EndPointConst.SUBTASK_ID_END_POINT + idSubTask);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
-        url = URI.create(SUBTASK_ID_END_POINT + 5);
+        url = URI.create(EndPointConst.SUBTASK_ID_END_POINT + 5);
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
@@ -334,8 +348,13 @@ class HttpTaskServerTest {
 
     @Test
     void updateSubTask() throws IOException, InterruptedException {
+        Epic expectedEpic = new Epic("epic", "desc");
+        int idEpic = taskManager.createEpic(expectedEpic);
+        SubTask expectedSubTask = new SubTask("subTask", "desc", StatusOfTasks.NEW, idEpic,
+                10, LocalDateTime.of(2023, 01, 02, 15, 00));
+        int idSubTask = taskManager.createSubTask(expectedSubTask);
         String jsonTask = gson.toJson(expectedSubTask);
-        URI url = URI.create(SUBTASK_ID_END_POINT + idSubTask);
+        URI url = URI.create(EndPointConst.SUBTASK_ID_END_POINT + idSubTask);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(jsonTask.getBytes()))
@@ -353,10 +372,18 @@ class HttpTaskServerTest {
 
     @Test
     void getHistory() throws IOException, InterruptedException {
+        Task expectedTask = new Task("task", "desc", StatusOfTasks.NEW,
+                10, LocalDateTime.of(2023, 01, 01, 15, 00));
+        int idTask = taskManager.createTask(expectedTask);
+        Epic expectedEpic = new Epic("epic", "desc");
+        int idEpic = taskManager.createEpic(expectedEpic);
+        SubTask expectedSubTask = new SubTask("subTask", "desc", StatusOfTasks.NEW, idEpic,
+                10, LocalDateTime.of(2023, 01, 02, 15, 00));
+        int idSubTask = taskManager.createSubTask(expectedSubTask);
         taskManager.getEpicById(idEpic);
         taskManager.getTaskById(idTask);
         taskManager.getSubTaskById(idSubTask);
-        URI url = URI.create(HISTORY_END_POINT);
+        URI url = URI.create(EndPointConst.HISTORY_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -373,7 +400,7 @@ class HttpTaskServerTest {
 
     @Test
     void getPrioritizedTask() throws IOException, InterruptedException {
-        URI url = URI.create(PRIORITIZED_END_POINT);
+        URI url = URI.create(EndPointConst.PRIORITIZED_END_POINT);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -390,7 +417,12 @@ class HttpTaskServerTest {
 
     @Test
     void getSubTaskInEpic() throws IOException, InterruptedException {
-        URI url = URI.create(SUBTASK_IN_EPIC_END_POINT + idEpic);
+        Epic expectedEpic = new Epic("epic", "desc");
+        int idEpic = taskManager.createEpic(expectedEpic);
+        SubTask expectedSubTask = new SubTask("subTask", "desc", StatusOfTasks.NEW, idEpic,
+                10, LocalDateTime.of(2023, 01, 02, 15, 00));
+        int idSubTask = taskManager.createSubTask(expectedSubTask);
+        URI url = URI.create(EndPointConst.SUBTASK_IN_EPIC_END_POINT + idEpic);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -403,7 +435,7 @@ class HttpTaskServerTest {
                 .build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(405, response.statusCode());
-        url = URI.create(SUBTASK_IN_EPIC_END_POINT + 1);
+        url = URI.create(EndPointConst.SUBTASK_IN_EPIC_END_POINT + 5);
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
